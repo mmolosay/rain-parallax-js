@@ -25,9 +25,9 @@ class Drop {
         this.y = intInRange(-1000, 0);
         this.z = level;
         this.thickness = map(this.z, -1, dropsMaxLevels -1, 0, dropsMaxThickness);
-        this.len = map(this.z, -1, dropsMaxLevels -1, 0, dropsMaxLen);
+        this.len = map(this.z, -1, dropsMaxLevels -1, dropsMinLen, dropsMaxLen);
         this.speed = map(this.z, -1, dropsMaxLevels -1, dropsMinSpeed, dropsMaxSpeed);
-        this.alpha = map(this.z, -1, dropsMaxLevels - 1, 0, 100) / 100;
+        this.alpha = map(this.z, -1, dropsMaxLevels - 1, 40, 100) / 100;
         console.log(this.alpha);
 
         if (vector instanceof Vector) {

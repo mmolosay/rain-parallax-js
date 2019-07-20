@@ -1,13 +1,16 @@
 const fps = 60;
 const updateDelta = Math.floor(1000 / fps);
 
-const dropsInitLevel = 200;
-const dropsPerLevelIncr = 20;
-const dropsMaxThickness = 2;
-const dropsMaxLen = 65;
+const dropsInitLevel = 50;
+const dropsPerLevelIncr = 5;
+const dropsMaxThickness = 1;
+
+const dropsMinLen = 20;
+const dropsMaxLen = 80;
+
 const dropsMaxLevels = dropsInitLevel / dropsPerLevelIncr;
 
-const dropsMinSpeed = 10;
+const dropsMinSpeed = 5;
 const dropsMaxSpeed = 30;
 
 const bgColor = '#0e131b';

@@ -1,20 +1,23 @@
 "use strict";
 
-const canvas = document.getElementById("canvas");
-const c = canvas.getContext("2d");
+const canvasElement = document.getElementById("canvas");
+const c = canvasElement.getContext("2d");
 
 let w = document.body.clientWidth;
 let h = document.body.clientHeight;
 
-const drops = [];
+const dropsAtLevels = [];
 
 
 function init() {
-    canvas.width = w;
-    canvas.height = h;
+    canvasElement.width = w;
+    canvasElement.height = h;
 
-    for (let i = 0; i < dropsMaxCount; i++) {
-        drops[i] = new Drop(new Vector(0, -1));
+    for (let level = 0; level < dropsMaxLevels; level++) {
+        dropsAtLevels[level] = [];
+        for (let drop = 0; drop < dropsInitLevel - dropsPerLevelIncr * level; drop++) {
+            dropsAtLevels[level][drop] = new Drop(new Vector(0, -1),  level);
+        }
     }
 }
 
@@ -24,19 +27,24 @@ function recompute() {
 }
 
 function resetCanvas() {
-    canvas.width = w;
-    canvas.height = h;
+    canvasElement.width = w;
+    canvasElement.height = h;
 }
 
 function clearCanvas() {
     c.fillStyle = bgColor;
+    c.globalAlpha = 1;
     c.fillRect(0, 0, w, h);
 }
 
 function draw() {
     c.strokeStyle = rainColor;
-    for (let i = 0; i < dropsMaxCount; i++) {
-        drops[i].draw(c);
+    for (let i = 0; i < dropsMaxLevels; i++) {
+        c.globalAlpha = dropsAtLevels[i][0].alpha;
+        for (let j = 0; j < dropsInitLevel - dropsPerLevelIncr * i; j++) {
+            dropsAtLevels[i][j].draw(c);
+        }
+
     }
 }
 

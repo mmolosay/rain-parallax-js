@@ -20,29 +20,31 @@ class Vector {
 
 class Drop {
 
-    constructor(vector) {
+    constructor(vector, level) {
         this.x = intInRange(0, w);
         this.y = intInRange(-1000, 0);
-        this.z = intInRange(0, dropsMaxLevels);
-        this.thickness = map(this.z, 0, dropsMaxLevels, 0, dropsMaxThickness);
-        this.len = map(this.z, 0, dropsMaxLevels, 0, dropsMaxLen);
-        this.speed = map(this.z, 0, dropsMaxLevels, dropsMinSpeed, dropsMaxSpeed);
+        this.z = level;
+        this.thickness = map(this.z, -1, dropsMaxLevels -1, 0, dropsMaxThickness);
+        this.len = map(this.z, -1, dropsMaxLevels -1, 0, dropsMaxLen);
+        this.speed = map(this.z, -1, dropsMaxLevels -1, dropsMinSpeed, dropsMaxSpeed);
+        this.alpha = map(this.z, -1, dropsMaxLevels - 1, 0, 100) / 100;
+        console.log(this.alpha);
 
         if (vector instanceof Vector) {
             this.vector = vector;
         }
     }
 
-    draw = (canvas) => {
-        if (canvas instanceof CanvasRenderingContext2D) {
-            canvas.lineWidth = this.thickness;
-            canvas.beginPath();
-                canvas.moveTo(this.x, this.y);
-                canvas.lineTo(this.x, this.y + this.len);
-            canvas.stroke();
+    draw = (c) => {
+        if (c instanceof CanvasRenderingContext2D) {
+            c.lineWidth = this.thickness;
+
+            c.beginPath();
+                c.moveTo(this.x, this.y);
+                c.lineTo(this.x, this.y + this.len);
+            c.stroke();
 
             this.y += this.speed;
-
             if (this.y > h) this.y = intInRange(-1000, 0);
         }
     }

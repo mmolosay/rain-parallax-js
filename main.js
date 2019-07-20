@@ -6,6 +6,8 @@ const c = canvasElement.getContext("2d");
 let w = document.body.clientWidth;
 let h = document.body.clientHeight;
 
+let rainAngle = -45;
+let dropSpawnXoffset;
 const dropsAtLevels = [];
 
 
@@ -13,10 +15,14 @@ function init() {
     canvasElement.width = w;
     canvasElement.height = h;
 
+    dropSpawnXoffset = getSpawnXoffset(rainAngle);
+
     for (let level = 0; level < dropsMaxLevels; level++) {
         dropsAtLevels[level] = [];
         for (let drop = 0; drop < dropsInitLevel - dropsPerLevelIncr * level; drop++) {
-            dropsAtLevels[level][drop] = new Drop(new Vector(0, -1),  level);
+            let vector = new UnitVector2D(0, 1);
+            vector.rotateTo(rainAngle);
+            dropsAtLevels[level][drop] = new Drop(vector,  level);
         }
     }
 }
@@ -24,6 +30,12 @@ function init() {
 function recompute() {
     w = document.body.clientWidth;
     h = document.body.clientHeight;
+    dropSpawnXoffset = getSpawnXoffset(rainAngle);
+    for (let level = 0; level < dropsMaxLevels; level++) {
+        for (let drop = 0; drop < dropsInitLevel - dropsPerLevelIncr * level; drop++) {
+            dropsAtLevels[level][drop].vector.rotateTo(rainAngle);
+        }
+    }
 }
 
 function resetCanvas() {
@@ -41,6 +53,7 @@ function draw() {
     c.strokeStyle = rainColor;
     for (let i = 0; i < dropsMaxLevels; i++) {
         c.globalAlpha = dropsAtLevels[i][0].alpha;
+        c.lineWidth = dropsAtLevels[i][0].thickness;
         for (let j = 0; j < dropsInitLevel - dropsPerLevelIncr * i; j++) {
             dropsAtLevels[i][j].draw(c);
         }
@@ -57,6 +70,10 @@ function loop() {
 window.onresize = () => {
     recompute();
     resetCanvas();
+};
+window.onclick = () => {
+    rainAngle += 5;
+    recompute();
 };
 init();
 setInterval(loop, updateDelta);

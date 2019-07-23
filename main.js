@@ -6,44 +6,37 @@ const c = canvasElement.getContext("2d");
 let w = document.body.clientWidth;
 let h = document.body.clientHeight;
 
-let rainAngle = -30;
+let initRainAngle = 0;
+let currRainAngle = initRainAngle;
 let dropSpawnXoffset = undefined;
 let lastSpawnTime = new Date();
-const dropsAtLevels = [];
-
 let currDropsCount = 0;
+let frame = 0;
+const dropsAtLevels = [];
+const noise = new Simple1DNoise(-10, updateDelta / 1000);
 
 
 function init() {
     canvasElement.width = w;
     canvasElement.height = h;
 
-    dropSpawnXoffset = makeSpawnXoffset(rainAngle);
-
-    // for (let lvl = 0; lvl < dropsMaxLevels; lvl++) {
-    //     dropsAtLevels[lvl] = [];
-    //     for (let drop = 0; drop < dropsInitLevel - dropsPerLevelIncr * lvl; drop++) {
-    //         let vector = new UnitVector2D(0, 1);
-    //         vector.rotateTo(rainAngle);
-    //         dropsAtLevels[lvl][drop] = new Drop(vector, lvl);
-    //     }
-    // }
+    dropSpawnXoffset = makeSpawnXoffset(currRainAngle);
 
     for (let lvl = 0; lvl < dropsMaxLevels; lvl++) {
         dropsAtLevels[lvl] = [];
     }
-
-
 }
 
 function recompute() {
     w = document.body.clientWidth;
     h = document.body.clientHeight;
-    dropSpawnXoffset = makeSpawnXoffset(rainAngle);
+
+    dropSpawnXoffset = makeSpawnXoffset(currRainAngle);
+
     for (let lvl = 0; lvl < dropsMaxLevels; lvl++) {
         if (dropsAtLevels[lvl].length === 0) continue;
         for (let drop = 0; drop < dropsAtLevels[lvl].length; drop++) {
-            dropsAtLevels[lvl][drop].vector.rotateTo(rainAngle);
+            dropsAtLevels[lvl][drop].vector.rotateTo(currRainAngle);
         }
     }
 }
@@ -70,14 +63,23 @@ function update() {
                     lvl = intInRange(0, dropsMaxLevels - 1);
                 else break;
             }
-            v.rotateTo(rainAngle);
+            v.rotateTo(currRainAngle);
             dropsAtLevels[lvl].push(new Drop(v, lvl));
-            console.log(++currDropsCount + " / " + dropsTotalCount);
+            currDropsCount++;
         }
+    }
+
+    currRainAngle = initRainAngle + noise.getVal(frame++);
+    console.log(currRainAngle);
+    applyWind();
+
+    if (frame % fps === 0) {
+        initRainAngle = currRainAngle;
+        noise.amplitude = -noise.amplitude;
     }
 }
 
-function draw() {
+function drawRain() {
     c.strokeStyle = rainColor;
     for (let lvl = 0; lvl < dropsAtLevels.length; lvl++) {
         if (dropsAtLevels[lvl].length === 0) continue;
@@ -86,24 +88,34 @@ function draw() {
         for (let j = 0; j < dropsAtLevels[lvl].length; j++) {
             dropsAtLevels[lvl][j].draw(c);
         }
-
     }
+}
+
+function applyWind() {
+    dropSpawnXoffset = makeSpawnXoffset(currRainAngle);
+    for (let lvl = 0; lvl < dropsMaxLevels; lvl++) {
+        if (dropsAtLevels[lvl].length === 0) continue;
+        for (let drop = 0; drop < dropsAtLevels[lvl].length; drop++) {
+            dropsAtLevels[lvl][drop].vector.rotateTo(currRainAngle);
+        }
+    }
+}
+
+function drawWind() {
+
 }
 
 function loop() {
     clearCanvas();
     update();
-    draw();
+    drawRain();
+    drawWind()
 }
 
 
 window.onresize = () => {
     recompute();
     resetCanvas();
-};
-window.onclick = () => {
-    rainAngle += 5;
-    recompute();
 };
 init();
 setInterval(loop, updateDelta);

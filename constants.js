@@ -17,6 +17,10 @@ const dropsSpawnDeltaTime = 40;
 const dropsMinSpeed = 5;
 const dropsMaxSpeed = 30;
 
+const rainMaxAbsAngle = 40;
+
+const windForceChangeChance = 0.05;
+
 const bgColor = '#0e131b';
 const rainColor = '#f0f8ff';
 

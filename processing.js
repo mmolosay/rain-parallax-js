@@ -86,6 +86,35 @@ class Drop {
 
 }
 
+class Simple1DNoise {
+
+    constructor(amplitude, scale) {
+        this.amplitude = amplitude;
+        this.scale = scale;
+        this.size = 256;
+        this.r = [];
+        for (let i = 0; i < this.size; i++) this.r[i] = Math.random();
+    }
+
+    getVal = (x) => {
+        let scaledX = x * this.scale;
+        let xFloor = Math.floor(scaledX);
+        let t = scaledX - xFloor;
+        let tRemapSmoothstep = t * t * ( 3 - 2 * t );
+
+        let xMin = xFloor % this.size;
+        let xMax = ( xMin + 1 ) % this.size;
+
+        let y = this.lerp(this.r[xMin], this.r[xMax], tRemapSmoothstep);
+
+        return y * this.amplitude;
+    };
+
+    lerp = (a, b, t) => {
+        return a * (1 - t) + b * t;
+    }
+}
+
 
 function intInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

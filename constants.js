@@ -1,8 +1,8 @@
 const fps = 60;
 const updateDelta = Math.floor(1000 / fps);
 
-const dropsInitLevel = 100;
-const dropsPerLevelIncr = 10;
+const dropsInitLevel = 50;
+const dropsPerLevelIncr = 5;
 const dropsMaxThickness = 1;
 
 const dropsMinLen = 40;

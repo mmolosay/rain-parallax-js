@@ -6,7 +6,7 @@ const c = canvasElement.getContext("2d");
 let w = document.body.clientWidth;
 let h = document.body.clientHeight;
 
-let rainAngle = -45;
+let rainAngle = -30;
 let dropSpawnXoffset;
 const dropsAtLevels = [];
 
@@ -25,6 +25,9 @@ function init() {
             dropsAtLevels[level][drop] = new Drop(vector,  level);
         }
     }
+
+    console.log(dropSpawnXoffset);
+    console.log(h / 2);
 }
 
 function recompute() {

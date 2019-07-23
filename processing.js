@@ -99,6 +99,6 @@ function degreesToRadians(degrees) {
 }
 
 function getSpawnXoffset(degrees) {
-    let offset = h * Math.sin(degreesToRadians(degrees));
+    let offset = h * Math.tan(degreesToRadians(degrees));
     return Math.round(offset);
 }

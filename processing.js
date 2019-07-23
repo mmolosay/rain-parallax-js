@@ -48,7 +48,7 @@ class Drop {
         this.len = map(this.z, -1, dropsMaxLevels -1, dropsMinLen, dropsMaxLen);
         this.speed = map(this.z, -1, dropsMaxLevels -1, dropsMinSpeed, dropsMaxSpeed);
         this.alpha = map(this.z, -1, dropsMaxLevels - 1, 40, 100) / 100;
-        console.log(this.alpha);
+        // console.log(this.alpha);
 
         if (vector instanceof UnitVector2D) {
             this.vector = vector;
@@ -66,7 +66,11 @@ class Drop {
             this.x = this.x + this.speed * this.vector.x;
             this.y = this.y + this.speed * this.vector.y;
 
-            if (this.y > h) {
+            if (
+              this.y > h ||
+              this.x < (dropSpawnXoffset > 0 ? 0 : dropSpawnXoffset) ||
+              this.x > (dropSpawnXoffset > 0 ? w + dropSpawnXoffset : w)
+            ) {
                 this.y = 0 - this.len;
                 this.x = this.makeX();
             }
@@ -98,7 +102,11 @@ function degreesToRadians(degrees) {
     return degrees * Math.PI / 180;
 }
 
-function getSpawnXoffset(degrees) {
+function makeSpawnXoffset(degrees) {
     let offset = h * Math.tan(degreesToRadians(degrees));
     return Math.round(offset);
+}
+
+function getElapsedTimeMs(start) {
+    return (new Date() - start);
 }
